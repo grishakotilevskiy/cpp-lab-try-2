@@ -1,33 +1,37 @@
 #include "FrequencyRandomizer.h"
-#include <random>
-#include <stdexcept>
 #include <numeric>
 
-FrequencyRandomizer::FrequencyRandomizer(const std::vector<int>& values,
-    const std::vector<unsigned long long>& freqs)
-    : values_(values)
-{
-    if (values_.empty() || freqs.empty() || values_.size() != freqs.size()) {
-        throw std::runtime_error("FrequencyRandomizer");
-    }
-
-    // Перевірка частот і створення ваг для discrete_distribution
-    std::vector<double> weights;
-    weights.reserve(freqs.size());
-    unsigned long long sum = 0;
-    for (auto f : freqs) {
-        if (f == 0) throw std::runtime_error("FrequencyRandomizer");
-        weights.push_back(static_cast<double>(f));
-        sum += f;
-    }
-
+FrequencyRandomizer::FrequencyRandomizer(const std::vector<int>& numbers, const std::vector<int>& frequencies)
+    : m_numbers(numbers) {
+    
     std::random_device rd;
-    rng_.seed(rd());
+    m_rng.seed(rd());
 
-    dist_ = std::discrete_distribution<std::size_t>(weights.begin(), weights.end());
+    m_total_frequency = 0;
+    for (int freq : frequencies) {
+        m_total_frequency += freq;
+    }
+
+    int current_sum = 0;
+    for (int freq : frequencies) {
+        current_sum += freq;
+        m_cumulative_frequencies.push_back(current_sum);
+    }
 }
 
 int FrequencyRandomizer::operator()() {
-    std::size_t idx = dist_(rng_);
-    return values_.at(idx);
+    if (m_total_frequency == 0) {
+        return 0;
+    }
+
+    std::uniform_int_distribution<int> dist(1, m_total_frequency);
+    int random_value = dist(m_rng);
+
+    for (size_t i = 0; i < m_cumulative_frequencies.size(); ++i) {
+        if (random_value <= m_cumulative_frequencies[i]) {
+            return m_numbers[i];
+        }
+    }
+    
+    return 0;
 }
