@@ -2,14 +2,18 @@
 #include <vector>
 #include <random>
 
+struct NumberData {
+    int number;
+    int frequency;
+};
+
 class FrequencyRandomizer {
 public:
-    FrequencyRandomizer(const std::vector<int>& numbers, const std::vector<int>& frequencies);
+    FrequencyRandomizer(const std::vector<NumberData>& data);
     int operator()();
 
 private:
-    std::vector<int> m_numbers;
-    std::vector<int> m_cumulative_frequencies;
-    int m_total_frequency;
-    std::mt19937 m_rng;
+    std::vector<int> weighted_sequence;
+    std::mt19937 generator;
+    std::uniform_int_distribution<> distribution;
 };
