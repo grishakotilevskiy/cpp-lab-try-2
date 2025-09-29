@@ -2,7 +2,7 @@
 
 FrequencyRandomizer::FrequencyRandomizer(const std::vector<NumberData>& data) {
     if (data.empty()) {
-        return;
+        return 0;
     }
 
     for (const auto& item : data) {
@@ -25,3 +25,4 @@ int FrequencyRandomizer::operator()() {
     }
     return weighted_sequence[distribution(generator)];
 }
+
