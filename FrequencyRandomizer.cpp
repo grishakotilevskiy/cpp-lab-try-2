@@ -1,37 +1,27 @@
 #include "FrequencyRandomizer.h"
-#include <numeric>
 
-FrequencyRandomizer::FrequencyRandomizer(const std::vector<int>& numbers, const std::vector<int>& frequencies)
-    : m_numbers(numbers) {
-    
-    std::random_device rd;
-    m_rng.seed(rd());
-
-    m_total_frequency = 0;
-    for (int freq : frequencies) {
-        m_total_frequency += freq;
+FrequencyRandomizer::FrequencyRandomizer(const std::vector<NumberData>& data) {
+    if (data.empty()) {
+        return;
     }
 
-    int current_sum = 0;
-    for (int freq : frequencies) {
-        current_sum += freq;
-        m_cumulative_frequencies.push_back(current_sum);
+    for (const auto& item : data) {
+        for (int j = 0; j < item.frequency; ++j) {
+            weighted_sequence.push_back(item.number);
+        }
+    }
+
+    std::random_device rd;
+    generator.seed(rd());
+
+    if (!weighted_sequence.empty()) {
+        distribution = std::uniform_int_distribution<>(0, weighted_sequence.size() - 1);
     }
 }
 
 int FrequencyRandomizer::operator()() {
-    if (m_total_frequency == 0) {
+    if (weighted_sequence.empty()) {
         return 0;
     }
-
-    std::uniform_int_distribution<int> dist(1, m_total_frequency);
-    int random_value = dist(m_rng);
-
-    for (size_t i = 0; i < m_cumulative_frequencies.size(); ++i) {
-        if (random_value <= m_cumulative_frequencies[i]) {
-            return m_numbers[i];
-        }
-    }
-    
-    return 0;
+    return weighted_sequence[distribution(generator)];
 }
