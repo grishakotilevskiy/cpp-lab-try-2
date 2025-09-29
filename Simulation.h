@@ -10,15 +10,11 @@ public:
     void run();
 
 private:
-    bool readData();
-    void performCalculations();
-    void printResults();
+    bool loadData();
 
-    std::string m_filename;
-    int m_N;
-    std::vector<int> m_numbers;
-    std::vector<int> m_frequencies;
-    
-    std::map<int, int> m_actual_counts;
-    double m_max_deviation;
+    std::string filename;
+    int n_trials;
+    std::vector<NumberData> input_data;
+    std::map<int, int> results;
+    bool is_ready = false;
 };
