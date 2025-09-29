@@ -35,8 +35,8 @@ void StatisticsReporter::printReport() const {
 
     for (const auto& item : input_data) {
         double expected_freq = static_cast<double>(item.frequency) / total_frequency_sum;
-        double actual_freq = simulation_results.count(item.number) ? simulation_results.at(item.number) : 0;
-        double actual_freq = actual_freq / num_trials;
+        double actual_count = simulation_results.count(item.number) ? simulation_results.at(item.number) : 0;
+        double actual_freq = actual_count / num_trials;
         double difference = std::abs(expected_freq - actual_freq);
 
         if (difference > max_difference) {
@@ -47,4 +47,5 @@ void StatisticsReporter::printReport() const {
     }
 
     std::cout << "\nMax frequency difference: " << max_difference << std::endl;
+
 }
