@@ -1,3 +1,6 @@
+// msvc
+// Григорій Котілєвський, Софія Пуха
+
 #include "Simulation.h"
 
 int main() {
@@ -5,3 +8,4 @@ int main() {
     simulation.run();
     return 0;
 }
+
